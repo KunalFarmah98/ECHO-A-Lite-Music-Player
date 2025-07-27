@@ -799,9 +799,9 @@ class SongPlayingFragment : Fragment() {
             fab?.setImageResource(R.drawable.favorite_off)
         }
 
-        if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
-            activity?.onBackPressed()
-        }
+//        if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
+//            activity?.onBackPressed()
+//        }
     }
 
     override fun onResume() {
