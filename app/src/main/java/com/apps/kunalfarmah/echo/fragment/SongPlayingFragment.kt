@@ -53,6 +53,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.toolTip
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.EchoNotification
+import com.apps.kunalfarmah.echo.service.PlaybackService
 import com.apps.kunalfarmah.echo.util.AppUtil
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
@@ -940,6 +941,7 @@ class SongPlayingFragment : Fragment() {
             }
 
             mediaPlayer.shuffleModeEnabled = MediaUtils.isShuffle
+            PlaybackService.mInstance?.setCustomLayoutForShuffle(MediaUtils.isShuffle)
 
         }
 
