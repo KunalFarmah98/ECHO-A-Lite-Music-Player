@@ -1,7 +1,9 @@
 package com.apps.kunalfarmah.echo.activity
 
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +31,25 @@ class SongPlayingActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.baseline_queue_music_white_24dp)
         supportActionBar?.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.colorPrimary)))
 
+        val typedValue = TypedValue()
+        var actionBarHeight = 0
+        if (theme.resolveAttribute(R.attr.actionBarSize, typedValue, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
+        }
+        // Fallback if attribute not found (though unlikely with standard themes)
+        if (actionBarHeight == 0 && supportActionBar != null) {
+            actionBarHeight = supportActionBar!!.height // Only if action bar is already measured
+        }
+
+        // handling edge to edge in Android 15+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM){
+            // Apply top margin to the container if actionBarHeight is available
+            if (actionBarHeight > 0) {
+                binding.container.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    topMargin = actionBarHeight
+                }
+            }
+        }
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
             val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(
@@ -37,15 +58,6 @@ class SongPlayingActivity : AppCompatActivity() {
                 systemBars.right,
                 systemBars.bottom
             )
-            val statusBarHeight = systemBars.top // Height of the status bar
-            // Set the top margin of the container
-            // The container needs to be below both the status bar and the ActionBar
-            binding.container.post {
-                val currentActionBarHeight = supportActionBar?.height ?: 0
-                binding.container.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                    topMargin = statusBarHeight + currentActionBarHeight
-                }
-            }
             WindowInsetsCompat.CONSUMED
         }
 
