@@ -55,6 +55,7 @@
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
