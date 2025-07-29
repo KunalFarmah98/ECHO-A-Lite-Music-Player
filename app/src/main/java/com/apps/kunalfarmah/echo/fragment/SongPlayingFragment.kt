@@ -32,6 +32,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mLastSh
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorManager
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.processInformation
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.setSeekButtonsControl
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateViews
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.albumArt
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
@@ -941,8 +942,6 @@ class SongPlayingFragment : Fragment() {
             }
 
             mediaPlayer.shuffleModeEnabled = MediaUtils.isShuffle
-            PlaybackService.mInstance?.setCustomLayoutForShuffle(MediaUtils.isShuffle)
-
         }
 
 
