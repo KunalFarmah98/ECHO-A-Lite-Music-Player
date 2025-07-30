@@ -70,9 +70,9 @@ class SearchFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Posting to the message queue helps ensure that.
+        // requesting focus for search field when it is rendered
         binding.searchEt.post {
-            if (isAdded && !isDetached) { // Ensure fragment is still valid
+            if (isAdded && !isDetached) {
                 binding.searchEt.requestFocus()
                 val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.showSoftInput(binding.searchEt, InputMethodManager.SHOW_IMPLICIT)
