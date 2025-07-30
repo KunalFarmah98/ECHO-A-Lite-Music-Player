@@ -71,12 +71,10 @@
   height = "350"/>
   <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small_13.jpg" width =190 
   height = "350"/>
-  <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big_13.jpg" width =190 
-  <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti.jpeg" width =190 
-  height = "350"/>
-  <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small.jpeg" width =190 
+  <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big_13.jpg" width =190 />
+  <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small.png" width =190 
   height = "350"/> 
-  <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big.jpeg" width =190 
+  <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big.png" width =190 
   height = "350"/>
   <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/material_you_notification.png" width =190 
   height = "350"/>
