@@ -9,8 +9,14 @@
     <color name="third">#74204d</color>
     <color name="four">#9d2a58</color>
 
+    <color name="divider">#80FFFFFF</color>
+
     <color name="splashStatusBar">#9b2a58</color>
-    
+
+    <color name="white_overlay_15_percent">#26FFFFFF</color>
+    <color name="white_overlay_20_percent">#33FFFFFF</color>
+    <color name="white_overlay_25_percent">#40FFFFFF</color>
+
     <array name="rainbow">
         <item>
             @color/first

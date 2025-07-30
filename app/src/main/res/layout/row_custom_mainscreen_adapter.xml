@@ -12,10 +12,10 @@
         app:cardElevation="0dp"
         android:layout_marginVertical="@dimen/_2sdp"
         app:cardCornerRadius="0dp"
-        android:layout_marginHorizontal="@dimen/_8sdp"
-        app:strokeWidth="2dp">
+        android:layout_marginHorizontal="@dimen/_8sdp">
 
         <RelativeLayout
+            android:id="@+id/card_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true">
@@ -47,6 +47,7 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:paddingRight="9dp"
+                    android:textFontWeight="700"
                     android:paddingBottom="-7dp"
                     android:scrollHorizontally="true"
                     android:text="Stairway to Heaven"
@@ -65,7 +66,7 @@
                     android:scrollHorizontally="true"
                     android:singleLine="true"
                     android:text="The Smithies"
-                    android:textColor="#858585"
+                    android:textColor="#ffffff"
                     android:textSize="15sp"
                     android:textStyle="normal" />
 
@@ -80,7 +81,7 @@
                     android:scrollHorizontally="true"
                     android:singleLine="true"
                     android:text="The Smithies"
-                    android:textColor="#858585"
+                    android:textColor="#ffffff"
                     android:textSize="15sp"
                     android:textStyle="normal" />
 
@@ -94,9 +95,9 @@
     <View
         android:layout_width="wrap_content"
         android:layout_height="1dp"
+        android:layout_marginTop="2dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:background="#e0e0e0" />
+        android:layout_marginHorizontal="@dimen/_8sdp"
+        android:background="@color/divider" />
 
 </RelativeLayout>

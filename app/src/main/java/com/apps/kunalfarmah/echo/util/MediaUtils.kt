@@ -2,6 +2,7 @@ package com.apps.kunalfarmah.echo.util
 
 import android.content.ComponentName
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
@@ -36,6 +37,7 @@ object MediaUtils {
      private val sessionToken = SessionToken(App.context, ComponentName(App.context, PlaybackService::class.java))
      private lateinit var controllerFuture: ListenableFuture<MediaController>
      private lateinit var controller: MediaController
+     private var preferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
      var isAlbumPlaying = false
      var isAllSongsPLaying = false
      var isFavouritesPlaying = false
@@ -48,18 +50,18 @@ object MediaUtils {
           AppUtil.getAppPreferences(App.context).getInt(Constants.VISUALIZER, View.GONE).let{
                visualizerVisibilty = it
           }
-          AppUtil.getAppPreferences(App.context).registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
-               if (key.equals(Constants.SHUFFLE)) {
+          preferenceChangeListener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+               if (key == Constants.SHUFFLE) {
                     val state = sharedPreferences?.getBoolean(key, false)
                     PlaybackService.mInstance?.setCustomLayoutForShuffle(state)
                     SongPlayingFragment.Staticated.setSeekButtonsControl()
                }
-
-               if (key.equals(Constants.VISUALIZER)) {
+               if (key == Constants.VISUALIZER) {
                     val state = sharedPreferences?.getInt(key, View.GONE)
                     visualizerVisibilty = state ?: View.GONE
                }
           }
+          AppUtil.getAppPreferences(App.context).registerOnSharedPreferenceChangeListener(preferenceChangeListener)
           val audioAttributes = AudioAttributes.Builder()
                   .setUsage(C.USAGE_MEDIA)
                   .setContentType(C.AUDIO_CONTENT_TYPE_MUSIC)

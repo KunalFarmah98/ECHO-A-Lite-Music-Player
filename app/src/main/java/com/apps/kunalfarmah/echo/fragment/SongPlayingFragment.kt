@@ -32,6 +32,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mLastSh
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorManager
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.processInformation
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.setSeekButtonsControl
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateViews
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.albumArt
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
@@ -53,6 +54,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.toolTip
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.EchoNotification
+import com.apps.kunalfarmah.echo.service.PlaybackService
 import com.apps.kunalfarmah.echo.util.AppUtil
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
@@ -799,9 +801,9 @@ class SongPlayingFragment : Fragment() {
             fab?.setImageResource(R.drawable.favorite_off)
         }
 
-        if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
-            activity?.onBackPressed()
-        }
+//        if (arguments?.getBoolean(Constants.WAS_MEDIA_PLAYING, false) == true) {
+//            activity?.onBackPressed()
+//        }
     }
 
     override fun onResume() {
@@ -940,7 +942,6 @@ class SongPlayingFragment : Fragment() {
             }
 
             mediaPlayer.shuffleModeEnabled = MediaUtils.isShuffle
-
         }
 
 

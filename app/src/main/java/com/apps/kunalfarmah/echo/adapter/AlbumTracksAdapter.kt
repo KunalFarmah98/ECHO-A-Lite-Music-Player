@@ -52,12 +52,24 @@ class AlbumTracksAdapter(_songDetails: ArrayList<Songs>, _context: Context, val 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val songObject = songDetails?.get(position)
         if(MediaUtils.isAlbumPlaying && position == MediaUtils.currInd && albumId == MediaUtils.currAlbum){
-            holder.binding?.contentRow?.strokeWidth = 2
-            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
+            try{
+                holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
+            }
+            catch(_: Exception) {
+                holder.binding?.contentRow?.strokeWidth = 2
+                holder.binding?.contentRow?.strokeColor =
+                    mContext?.resources?.getColor(R.color.colorAccent)!!
+            }
         }
         else{
-            holder.binding?.contentRow?.strokeWidth = 0
-            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorPrimary)!!
+            try{
+                holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.colorPrimary)!!)
+            }
+            catch (_: Exception) {
+                holder.binding?.contentRow?.strokeWidth = 0
+                holder.binding?.contentRow?.strokeColor =
+                    mContext?.resources?.getColor(R.color.colorPrimary)!!
+            }
         }
 
         /*The holder object of our MyViewHolder class has two properties i.e
@@ -112,8 +124,14 @@ class AlbumTracksAdapter(_songDetails: ArrayList<Songs>, _context: Context, val 
 
             stopPlaying(intent)
 
-            holder.binding?.contentRow?.strokeWidth = 2
-            holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
+            try{
+                holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
+            }
+            catch(_: Exception) {
+                holder.binding?.contentRow?.strokeWidth = 2
+                holder.binding?.contentRow?.strokeColor =
+                    mContext?.resources?.getColor(R.color.colorAccent)!!
+            }
 
 
             (mContext as MainActivity).startActivity(intent)

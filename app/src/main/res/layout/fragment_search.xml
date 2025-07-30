@@ -12,31 +12,41 @@
         android:id="@+id/search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="5"
+        android:weightSum="10"
         android:padding="@dimen/_5sdp"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal">
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="wrap_content"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textField_outlined"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:id="@+id/search_et"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textColorHint="#BCBCBC"
-            android:layout_gravity="center"
-            android:layout_weight="3"
-            android:hint="@string/search_hint"/>
+            android:layout_gravity="center_vertical"
+            android:layout_weight="8"
+            android:hint="@string/search_hint"
+            app:boxStrokeColor="@color/white_overlay_25_percent"
+            app:boxStrokeWidth="1dp"
+            app:hintTextColor="#FFFFFF">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/search_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+        </com.google.android.material.textfield.TextInputLayout>
         <ImageView
             android:id="@+id/icon_search"
-            android:layout_width="30dp"
+            android:layout_width="0dp"
             android:layout_height="30dp"
+            android:padding="4dp"
             android:layout_gravity="center"
             android:layout_weight="1"
             app:srcCompat = "@drawable/baseline_search_white_24dp"/>
         <ImageView
             android:id="@+id/icon_clear"
-            android:layout_width="30dp"
+            android:layout_width="0dp"
             android:layout_height="30dp"
+            android:padding="4dp"
             android:layout_weight="1"
             android:layout_gravity="center"
             app:srcCompat = "@drawable/baseline_close_24"/>
