@@ -1,7 +1,7 @@
 # ECHO - A Lite Offline music player for all the music lovers out there.
 
 <p align = "center">
-  <img width="330" height="220" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/feature.PNG">
+  <img width="350" height="220" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/feature.PNG">
   </p>
  
 #
@@ -36,7 +36,7 @@
    <img width="200" height="350" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/splash.jpeg">
    <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_playing.png" width =200 
   height = 350/>
-   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_vis_v3.jpg" width =200 
+   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_playing_viz.png" width =200 
   height = 350/>
   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/selected_song.png" width =200 
   height = 350/>
@@ -65,21 +65,21 @@
 #
 
 <p vspace = "20" align="center" >
-  <img width="190" height="330" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/albums.png">
-  <img  hspace="10" width="190" height="330" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/selected_favorite.png">
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/search.png" width =175 
-  height = 330/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small_13.jpg" width =175 
-  height = 330/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big_13.jpg" width =175 
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti.jpeg" width =175 
-  height = 330/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small.jpeg" width =175 
-  height = 330/> 
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big.jpeg" width =175 
-  height = 330/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/material_you_notification.png" width =175 
-  height = 330/>
+  <img width="200" height="350" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/albums.png">
+  <img  hspace="10" width="200" height="350" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/selected_favorite.png">
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/search.png" width =200 
+  height = "350"/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small_13.jpg" width =200 
+  height = "350"/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big_13.jpg" width =200 
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti.jpeg" width =200 
+  height = "350"/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_small.jpeg" width =200 
+  height = "350"/> 
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/noti_big.jpeg" width =200 
+  height = "350"/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/material_you_notification.png" width =200 
+  height = "350"/>
 </p>
 
 #
