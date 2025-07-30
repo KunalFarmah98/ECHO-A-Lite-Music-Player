@@ -34,11 +34,11 @@
 
 <p vspace = "20" align="center" >
    <img width="190" height="350" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/splash.jpeg">
-   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_playing.png" width =190 
+   <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_playing.png" width =190 
   height = 350/>
-   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_playing_viz.png" width =190 
+   <img src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_playing_viz.png" width =190 
   height = 350/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/selected_song.png" width =190 
+  <img  src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/selected_song.png" width =190 
   height = 350/>
 </p>
 
