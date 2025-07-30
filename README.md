@@ -35,13 +35,13 @@
 #
 
 <p vspace = "20" align="center" >
-   <img width="190" height="320" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/splash.jpeg">
-   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play.jpeg" width =190 
-  height = 320/>
-   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_vis.jpeg" width =190 
-  height = 320/>
-  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/list.jpeg" width =190 
-  height = 320/>
+   <img width="200" height="350" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/splash.jpeg">
+   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_playing.png" width =200
+  height = 350/>
+   <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/song_play_vis.jpeg" width =200 
+  height = 350/>
+  <img hspace="10" src="https://github.com/KunalFarmah98/ECHO---A-Lite-Music-Player/blob/master/app/src/main/res/raw/selected_song.png" width =200
+  height = 350/>
 </p>
 
 
