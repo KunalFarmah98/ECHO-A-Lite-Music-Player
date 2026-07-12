@@ -1,6 +1,5 @@
 package com.apps.kunalfarmah.echo.viewModel
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,17 +7,19 @@ import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.repository.SongsRepository
 import com.apps.kunalfarmah.echo.util.MediaUtils
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@HiltViewModel
 class SongsViewModel
-@ViewModelInject
+@Inject
 constructor(private val songsRepository: SongsRepository) : ViewModel() {
 
     private val _songsList: MutableLiveData<List<Songs>> = MutableLiveData()
     private val _albumSongsList: MutableLiveData<List<Songs>> = MutableLiveData()
     private val _albumsList: MutableLiveData<List<SongAlbum>> = MutableLiveData()
     private val _isLoading: MutableLiveData<Boolean> = MutableLiveData(true)
-    private val _isSongPlaying : MutableLiveData<Boolean> = MutableLiveData()
 
     val songsList: MutableLiveData<List<Songs>>
         get() = _songsList
@@ -31,7 +32,7 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
         get() = _isLoading
 
     val isSongPlaying: MutableLiveData<Boolean>
-        get() = _isSongPlaying
+        get() = MediaUtils.isSongPlaying
 
     val albumsList: MutableLiveData<List<SongAlbum>>
         get() = _albumsList
@@ -73,6 +74,6 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
     }
 
     fun setPlayStatus(play:Boolean){
-        isSongPlaying.value = play
+        MediaUtils.isSongPlaying.value = play
     }
 }

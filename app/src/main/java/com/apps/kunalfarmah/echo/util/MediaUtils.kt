@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.view.View
 import androidx.annotation.Keep
+import androidx.lifecycle.MutableLiveData
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
@@ -45,6 +46,8 @@ object MediaUtils {
      var visualizerEnabled = true
      var currAlbum = -1L
      var isShuffle = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
+     @JvmField
+     val isSongPlaying = MutableLiveData<Boolean>()
 
      init {
           AppUtil.getAppPreferences(App.context).getInt(Constants.VISUALIZER, View.GONE).let{

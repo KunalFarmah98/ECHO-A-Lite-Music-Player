@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -65,16 +66,19 @@ class SongPlayingActivity : AppCompatActivity() {
         songPlayingFragment.arguments = args
         supportFragmentManager.beginTransaction().replace(R.id.container, songPlayingFragment)
             .commit()
-    }
 
-    override fun onBackPressed() {
-        instance = null
-        BottomBarUtils.bottomBarBinding?.root?.visibility = View.VISIBLE
-        super.onBackPressed()
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                instance = null
+                BottomBarUtils.bottomBarBinding?.root?.visibility = View.VISIBLE
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            }
+        })
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return super.onSupportNavigateUp()
     }
 

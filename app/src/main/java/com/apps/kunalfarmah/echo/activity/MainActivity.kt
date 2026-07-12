@@ -20,6 +20,7 @@ import android.os.Handler
 import android.util.Log
 import android.util.SparseArray
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -30,6 +31,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -228,6 +231,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         dialogBinding = PermissionDialogBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+            val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                systemBars.bottom
+            )
+            WindowInsetsCompat.CONSUMED
+        }
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             handleRecordAudioPermission()
         }
@@ -246,6 +259,49 @@ class MainActivity : AppCompatActivity() {
         fragments!![3] = SearchFragment()
 
         viewModel.init()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+                if (Statified.drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
+                    Statified.drawerLayout!!.closeDrawer(GravityCompat.START)
+                    return
+                }
+
+                var fragment = supportFragmentManager.findFragmentByTag(MainScreenFragment.TAG)
+
+                if (fragment != null && fragment.isVisible) {
+                    finish()
+                    return
+                }
+
+                fragment = supportFragmentManager.findFragmentByTag(FavoriteFragment.TAG)
+
+                if (fragment != null && fragment.isVisible) {
+                    findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
+                    return
+                }
+
+                fragment = supportFragmentManager.findFragmentByTag(OfflineAlbumsFragment.TAG)
+                if (fragment != null && fragment.isVisible) {
+                    findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
+                    OfflineAlbumsFragment.postion=0
+                    return
+                }
+
+                fragment = supportFragmentManager.findFragmentByTag(SearchFragment.TAG)
+                if (fragment != null && fragment.isVisible) {
+                    findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
+                    return
+                }
+
+                // If no other conditions match, we might want to disable the callback and call onBackPressed
+                // or just finish the activity. Since this is the MainActivity, finish() is appropriate.
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            }
+        })
+
         /*This syntax is used to access the objects inside the class*/
         MainActivity.Statified.drawerLayout = findViewById(R.id.drawer_layout)
 
@@ -364,42 +420,5 @@ class MainActivity : AppCompatActivity() {
 
     fun moveToHome() {
         bottomNav!!.selectedItemId = R.id.navigation_main_screen
-    }
-
-    override fun onBackPressed() {
-
-
-        if (Statified.drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
-            Statified.drawerLayout!!.closeDrawer(GravityCompat.START)
-        }
-
-        var fragment = supportFragmentManager.findFragmentByTag(MainScreenFragment.TAG)
-
-        if (fragment != null && fragment.isVisible) {
-            finish()
-            return
-        }
-
-        fragment = supportFragmentManager.findFragmentByTag(FavoriteFragment.TAG)
-
-        if (fragment != null && fragment.isVisible) {
-            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
-            return
-        }
-
-        fragment = supportFragmentManager.findFragmentByTag(OfflineAlbumsFragment.TAG)
-        if (fragment != null && fragment.isVisible) {
-            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
-            OfflineAlbumsFragment.postion=0
-            return
-        }
-
-        fragment = supportFragmentManager.findFragmentByTag(SearchFragment.TAG)
-        if (fragment != null && fragment.isVisible) {
-            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
-            return
-        }
-
-        super.onBackPressed()
     }
 }

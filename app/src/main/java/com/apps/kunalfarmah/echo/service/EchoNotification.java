@@ -34,7 +34,6 @@ import com.apps.kunalfarmah.echo.activity.SongPlayingActivity;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
 import com.apps.kunalfarmah.echo.util.Constants;
 import com.apps.kunalfarmah.echo.util.MediaUtils;
-import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.FileDescriptor;
@@ -55,8 +54,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class EchoNotification extends Service {
 
 
-    @Inject
-    SongsViewModel songsViewModel;
     ArrayList<String> thoughts;
 
 
@@ -158,12 +155,12 @@ public class EchoNotification extends Service {
                 msong.setPlay(msong.playorpause());
 
                 if (msong.getPlay() == false) {
-                    songsViewModel.setPlayStatus(false);
+                    MediaUtils.isSongPlaying.postValue(false);
                     views.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
                     smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
 
                 } else {
-                    songsViewModel.setPlayStatus(true);
+                    MediaUtils.isSongPlaying.postValue(true);
                     views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                     smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 }
@@ -173,13 +170,13 @@ public class EchoNotification extends Service {
 
             } else if (null != intent && intent.getAction() != null
                     && intent.getAction().equals(Constants.ACTION.CHANGE_TO_PAUSE)) {
-                songsViewModel.setPlayStatus(true);
+                MediaUtils.isSongPlaying.postValue(true);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 updateNotiUI();
             } else if (null != intent && intent.getAction() != null
                     && intent.getAction().equals(Constants.ACTION.CHANGE_TO_PLAY)) {
-                songsViewModel.setPlayStatus(false);
+                MediaUtils.isSongPlaying.postValue(false);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
 
