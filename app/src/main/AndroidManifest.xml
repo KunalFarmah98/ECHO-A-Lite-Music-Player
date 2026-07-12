@@ -29,6 +29,9 @@
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
         android:enableOnBackInvokedCallback="true">
+
+        <property android:name="android.window.PROPERTY_COMPAT_ALLOW_RESTRICTED_RESIZABILITY" android:value="true" />
+
         <activity
             android:name=".activity.SongPlayingActivity"
             android:launchMode="singleTask"
