@@ -38,7 +38,6 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
         get() = _albumsList
 
     private var list: List<Songs>?=null
-    private var totalDuration: Long = 0L
     private var listAlbums: List<SongAlbum>?=null
     private var albumSongs: List<Songs>?=null
 
@@ -53,14 +52,11 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
     fun getAllSongs() {
         viewModelScope.launch {
             isLoading.value = true
-            val (songsList,duration) = songsRepository.getSongsFromPhone()
-            list = songsList
-            totalDuration = duration
+            list = songsRepository.getSongsFromPhone()
         }.invokeOnCompletion {
             songsList.value = list?:ArrayList()
             MediaUtils.allSongsList = (list ?: ArrayList()) as ArrayList<Songs>
             MediaUtils.setMediaItems()
-            MediaUtils.totalDuration = totalDuration
             isLoading.value = false
         }
     }

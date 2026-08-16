@@ -140,7 +140,8 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
                 (mContext as MainActivity).startActivity(intent)
             }
         } else if (holder is FooterViewHolder) {
-            val totalDuration = MediaUtils.getDuration(MediaUtils.totalDuration)
+            val totalDurationMs = songDetails?.sumOf { MediaUtils.songDurations[it.songID] ?: 0L } ?: 0L
+            val totalDuration = MediaUtils.getDuration(totalDurationMs)
             holder.totalSongs.text = mContext?.getString(R.string.total_songs_info, songDetails?.size ?: 0, totalDuration)
         }
     }

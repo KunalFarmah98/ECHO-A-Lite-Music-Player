@@ -46,7 +46,7 @@ object MediaUtils {
      var visualizerEnabled = true
      var currAlbum = -1L
      var isShuffle = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
-     var totalDuration = 0L
+     var songDurations = HashMap<Long, Long>()
      @JvmField
      val isSongPlaying = MutableLiveData<Boolean>()
 

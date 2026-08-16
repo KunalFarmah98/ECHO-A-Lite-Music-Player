@@ -76,8 +76,10 @@ class OfflineAlbumsAdapter(context: Context, list: List<SongAlbum>) : RecyclerVi
                     .commit()
             }
         } else if (holder is FooterViewHolder) {
-            val totalDuration = MediaUtils.getDuration(MediaUtils.totalDuration)
-            holder.totalAlbums.text = mContext.getString(R.string.total_albums_info, albums.size, MediaUtils.allSongsList.size, totalDuration)
+            val totalSongs = MediaUtils.allSongsList.size
+            val totalDurationMs = MediaUtils.allSongsList.sumOf { MediaUtils.songDurations[it.songID] ?: 0L }
+            val totalDuration = MediaUtils.getDuration(totalDurationMs)
+            holder.totalAlbums.text = mContext.getString(R.string.total_albums_info, albums.size, totalSongs, totalDuration)
         }
     }
 

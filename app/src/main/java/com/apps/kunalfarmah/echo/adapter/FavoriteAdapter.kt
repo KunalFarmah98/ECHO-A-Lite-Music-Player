@@ -137,8 +137,9 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
                 (mContext as FragmentActivity).startActivity(intent)
             }
         } else if (holder is FooterViewHolder) {
-            val totalDuration = MediaUtils.getDuration(MediaUtils.totalDuration)
-            holder.totalSongs.text = mContext?.getString(R.string.total_songs, songDetails?.size ?: 0)
+            val totalDurationMs = songDetails?.sumOf { MediaUtils.songDurations[it.songID] ?: 0L } ?: 0L
+            val totalDuration = MediaUtils.getDuration(totalDurationMs)
+            holder.totalSongs.text = mContext?.getString(R.string.total_songs_info, songDetails?.size ?: 0, totalDuration)
         }
     }
 

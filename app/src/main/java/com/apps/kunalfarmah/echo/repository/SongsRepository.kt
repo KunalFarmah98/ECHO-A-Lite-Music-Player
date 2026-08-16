@@ -20,7 +20,7 @@ class SongsRepository(
 ){
 
     suspend fun fetchSongs(){
-        val songs = getSongsFromPhone().first
+        val songs = getSongsFromPhone()
         echoDao.deleteAllSongs()
         echoDao.insertAll(cacheMapper.mapToEntityList(songs))
     }
@@ -40,7 +40,7 @@ class SongsRepository(
     }
 
 
-    suspend fun getSongsFromPhone(): Pair<ArrayList<Songs>, Long> {
+    suspend fun getSongsFromPhone(): ArrayList<Songs> {
 
         val songs = LinkedHashSet<Songs>()
         val contentResolver = context.contentResolver
@@ -57,7 +57,7 @@ class SongsRepository(
                 }
         }
         catch (e: Exception){
-            return Pair(ArrayList(songs),durationInSeconds)
+            return ArrayList(songs)
         }
         // all music files larger than 30 seconds and are not recordings
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} <> 0 AND ${MediaStore.Audio.Media.DURATION} > 30000 AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE 'AUD%' AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE '%RECORD%' AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE 'PTT%'"
@@ -84,7 +84,9 @@ class SongsRepository(
                 val currData = cursor.getString(songData)
                 val currDate = cursor.getLong(dateModified)*1000
                 val currAlbum = cursor.getLong(songAlbum)
-                durationInSeconds += cursor.getString(songDuration).toLong()
+                val duration = cursor.getString(songDuration).toLong()
+                durationInSeconds += duration
+                MediaUtils.songDurations[currentID] = duration
                 try {
                     songs.add(Songs(currentID, currTitle,  currArtist, album, currData, currDate, currAlbum))
                 }
@@ -101,6 +103,6 @@ class SongsRepository(
             songCursor!!.close()
         }catch (_:Exception){}
 
-        return Pair(ArrayList(songs.distinctBy { it.songTitle+it.artist+it.album+(it.songAlbum?:0L) }), durationInSeconds)
+        return ArrayList(songs.distinctBy { it.songTitle+it.artist+it.album+(it.songAlbum?:0L) })
     }
 }
