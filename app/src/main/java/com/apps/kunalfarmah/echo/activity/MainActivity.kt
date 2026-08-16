@@ -21,6 +21,7 @@ import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -231,16 +232,25 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         dialogBinding = PermissionDialogBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
-            val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(
-                systemBars.left,
-                systemBars.top,
-                systemBars.right,
-                systemBars.bottom
-            )
-            WindowInsetsCompat.CONSUMED
+
+        // edge to edge handling for android 15+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            enableEdgeToEdge()
+            // handling edge to edge padding for top and bottom bars
+            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+                val systemBars =
+                    windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+                binding.appbarlayout.setPadding(0, systemBars.top, 0, 0)
+                binding.mainLayout.bottomNav.setPadding(0, 0, 0, systemBars.bottom)
+                windowInsets
+            }
+            // preserving statusbar theme
+            val windowInsetsController =
+                ViewCompat.getWindowInsetsController(window.decorView)
+            windowInsetsController?.isAppearanceLightStatusBars = false
+            windowInsetsController?.isAppearanceLightNavigationBars = false
         }
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             handleRecordAudioPermission()
         }
