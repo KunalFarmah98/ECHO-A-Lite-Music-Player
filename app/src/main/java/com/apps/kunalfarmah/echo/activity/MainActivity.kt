@@ -233,15 +233,17 @@ class MainActivity : AppCompatActivity() {
         dialogBinding = PermissionDialogBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // edge to edge handling for android 15+
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             enableEdgeToEdge()
+            binding.drawerLayout.fitsSystemWindows = false
             // handling edge to edge padding for top and bottom bars
-            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
                 val systemBars =
                     windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
                 binding.appbarlayout.setPadding(0, systemBars.top, 0, 0)
                 binding.mainLayout.bottomNav.setPadding(0, 0, 0, systemBars.bottom)
+                binding.header.setPadding(0, systemBars.top, 0, 0)
+                binding.navRecyclerView.setPadding(0, 0, 0, systemBars.bottom)
                 windowInsets
             }
             // preserving statusbar theme
@@ -249,9 +251,18 @@ class MainActivity : AppCompatActivity() {
                 ViewCompat.getWindowInsetsController(window.decorView)
             windowInsetsController?.isAppearanceLightStatusBars = false
             windowInsetsController?.isAppearanceLightNavigationBars = false
+        } else {
+            window.statusBarColor = Color.TRANSPARENT
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            ViewCompat.setOnApplyWindowInsetsListener(binding.header) { view, windowInsets ->
+                val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                view.setPadding(0, systemBars.top, 0, 0)
+                windowInsets
+            }
         }
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             handleRecordAudioPermission()
         }
         sharedPreferences = getSharedPreferences(Constants.APP_PREFS,Context.MODE_PRIVATE)
