@@ -58,11 +58,83 @@
     <li><label><input type="checkbox"> Check new privacy/storage APIs</label> — expected: app either adapts or degrades gracefully</li>
   </ul>
 
-  <h2>Notes & Reporting</h2>
+  <h2>Comprehensive Tests & Diagnostics</h2>
   <ul>
-    <li>Record device/emulator model, API level, build variant, and reproduction steps for any failure.</li>
-    <li>If a blocker is found, add a follow-up todo in the session and include logcat, steps, and a screenshot.</li>
-    <li>Target: run Common Smoke Tests on at least one device per major API group and run version-specific tests on at least one device/emulator per listed API.</li>
+    <li>Record device/emulator model, Android version/API, build ID, app variant (debug/release), and exact reproduction steps with timestamps.</li>
+    <li>Collect logs and diagnostics for every failure: <code>adb logcat -v time -d &gt; logcat.txt</code>, optionally <code>adb bugreport &gt; bugreport.zip</code>, and <code>dumpsys media_session</code> / <code>dumpsys activity services</code> outputs for service issues.</li>
+    <li>Attach screenshots, short screen recordings, and the failing stack trace or ANR traces. For native crashes include tombstone or <code>adb shell ls /data/tombstones</code>.</li>
+    <li>Database integrity: run migration paths that affect Room schemas; verify data preserved and Room migrations succeed without exceptions. If schema changes exist, include a small export of important tables before/after.</li>
+    <li>Media & playback checks:
+      <ul>
+        <li>ExoPlayer / MediaPlayer codec compatibility across API levels; test multiple sample rates and formats (mp3, aac, opus).</li>
+        <li>Audio focus and ducking across calls, notifications, incoming calls, and Bluetooth events.</li>
+        <li>MediaSession controls, metadata, and notification actions (play/pause/seek/stop) — verify media button intents and Car/Android Auto behavior where applicable.</li>
+        <li>Playback under background restrictions, Doze, and app standby (verify scheduled jobs resume correctly).</li>
+      </ul>
+    </li>
+    <li>Foreground service & notifications:
+      <ul>
+        <li>Verify foreground service starts with proper notification on API 26+; PendingIntent mutability flags applied per API level.</li>
+        <li>Notification channels: presence, importance, tap action, and visibility for locked screens.</li>
+        <li>Notification content and media controls on Android Automotive/TV (if targeted).</li>
+      </ul>
+    </li>
+    <li>Permissions & storage:
+      <ul>
+        <li>Storage: scoped storage behavior, READ_EXTERNAL_STORAGE -> READ_MEDIA_AUDIO migration, SAF flows, and FileProvider URIs for legacy file sharing.</li>
+        <li>Package visibility: test queries and implicit intents if targetSdk >= 30 (package visibility manifest entries).</li>
+        <li>Runtime permission flows and handling of "deny & don't ask again" cases.</li>
+      </ul>
+    </li>
+    <li>Target SDK & behavior changes:
+      <ul>
+        <li>PendingIntent mutability flags (IMMUTABLE/MUTABLE) to avoid SecurityException on newer APIs.</li>
+        <li>Network security: cleartext enforcement, TLS versions, and certificate pinning if used.</li>
+        <li>Behavior changes for background execution limits, exact alarms, and system permission restrictions introduced in targetSdk upgrades.</li>
+      </ul>
+    </li>
+    <li>UI & platform compat:
+      <ul>
+        <li>Edge-to-edge/inset handling and gesture navigation changes (Android 10+). Verify content isn't obscured by system bars or cutouts.</li>
+        <li>Layout integrity on different DPIs, screen sizes, foldables, and multi-window; test rotation and configuration changes.</li>
+        <li>Accessibility: TalkBack navigation, content descriptions, focus order, and contrast checks.</li>
+      </ul>
+    </li>
+    <li>Background jobs, WorkManager, JobScheduler:
+      <ul>
+        <li>Verify scheduled tasks run with updated constraints and that WorkManager migrations (if any) behave correctly across upgrades.</li>
+      </ul>
+    </li>
+    <li>Crash/ANR & performance:
+      <ul>
+        <li>Run short stress test (start/stop playback repeatedly, rapid navigation) to surface race conditions and ANRs.</li>
+        <li>Check logcat for fatal exceptions, StrictMode violations, and memory leaks; include trace or heap dump if possible.</li>
+      </ul>
+    </li>
+    <li>Build & CI checks:
+      <ul>
+        <li>Build variants: debug/release signing, ProGuard/R8 rules, mapping file generation — verify release install and symbolication readiness.</li>
+        <li>Gradle plugin and dependency updates — confirm no deprecation warnings that impact runtime.
+        <li>ABI/testing matrix: run smoke tests on emulators for each ABI (armeabi-v7a, arm64-v8a, x86_64) and in CI if available.</li>
+      </ul>
+    </li>
+    <li>Integration & platform features:
+      <ul>
+        <li>Deep links / App Links: verify incoming URIs still resolve, and web verification (assetlinks) if used.</li>
+        <li>Widgets, shortcuts, and home screen interactions (if app exposes them).</li>
+      </ul>
+    </li>
+    <li>OEM & carrier behaviors:
+      <ul>
+        <li>If failures are OEM-specific (Xiaomi, Samsung, OnePlus), capture device settings (battery optimization, special permissions) and reproduction steps.</li>
+      </ul>
+    </li>
+    <li>Reporting and triage path:
+      <ul>
+        <li>For each confirmed blocker add a TODO in the session with severity, reproduction steps, logs, and a suggested owner.</li>
+        <li>Attach logcat, bugreport, screenshots, and exact git commit/branch in the issue or PR comment.
+      </ul>
+    </li>
   </ul>
 
   <p>Checklist file path: <code>docs/test-checklists/android-migration-checklist.html</code></p>
