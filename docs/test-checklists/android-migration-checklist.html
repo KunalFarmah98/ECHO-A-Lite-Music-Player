@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Android Migration PR — Test Checklist</title>
+  <style>body{font-family:Arial,Helvetica,sans-serif;margin:18px}h1{font-size:18px}h2{font-size:14px;margin-top:14px}ul{margin:6px 0 12px 18px}li{margin:6px 0}</style>
+</head>
+<body>
+  <h1>Android Migration PR — Concise Test Checklist</h1>
+  <p>Purpose: Verify migration across Android versions: 7, 10, 12, 14, 15, 16, 17. Keep tests short; mark blockers found per-version.</p>
+
+  <h2>Common Smoke Tests (run on at least one device/emulator per ABI)</h2>
+  <ul>
+    <li><label><input type="checkbox"> Build & install APK (debug and release)</label> — expected: installs without signature or manifest errors</li>
+    <li><label><input type="checkbox"> Cold launch (first run)</label> — expected: app opens, no crash, initial screen visible</li>
+    <li><label><input type="checkbox"> Playback start/stop</label> — expected: audio plays, pause/stop works, no skipping</li>
+    <li><label><input type="checkbox"> Background playback (home button)</label> — expected: playback continues or behaves per spec (notification + controls)</li>
+    <li><label><input type="checkbox"> Notification/media controls</label> — expected: play/pause/seek respond correctly from notification</li>
+    <li><label><input type="checkbox"> Headset and Bluetooth audio</label> — expected: route switches, pause on disconnect</li>
+    <li><label><input type="checkbox"> Runtime permissions flow</label> — expected: permission prompts appear when needed; app handles denial/grant</li>
+    <li><label><input type="checkbox"> Orientation change / rotation</label> — expected: UI stable; playback unaffected</li>
+    <li><label><input type="checkbox"> Low network / offline behavior</label> — expected: graceful error or retry; no crash</li>
+    <li><label><input type="checkbox"> Fast app switching / lock/unlock</label> — expected: state preserved, no unexpected restarts</li>
+    <li><label><input type="checkbox"> Memory/battery sanity</label> — expected: no excessive memory spikes or battery drain during short smoke test</li>
+    <li><label><input type="checkbox"> Crash-free session (check logcat for fatal exceptions)</label> — expected: no fatal uncaught exceptions</li>
+  </ul>
+
+  <h2>Android 7 (API 24/25)</h2>
+  <ul>
+    <li><label><input type="checkbox"> Install & run on Android 7 device/emulator</label> — expected: no manifest or permission regressions</li>
+    <li><label><input type="checkbox"> Background service behavior</label> — expected: service starts/stops as before (verify playback service lifecycle)</li>
+    <li><label><input type="checkbox"> Audio focus handling</label> — expected: handles duck/abandon correctly</li>
+  </ul>
+
+  <h2>Android 10 (API 29)</h2>
+  <ul>
+    <li><label><input type="checkbox"> Scoped storage compatibility</label> — expected: app reads/writes media as intended or uses SAF if required</li>
+    <li><label><input type="checkbox"> Background location (if applicable)</label> — expected: prompts and behavior match app policy</li>
+  </ul>
+
+  <h2>Android 12 (API 31)</h2>
+  <ul>
+    <li><label><input type="checkbox"> Exact alarm / foreground-service restrictions</label> — expected: any foreground service-based playback remains allowed and shows notification</li>
+    <li><label><input type="checkbox"> Microphone/camera indicators (privacy)</label> — expected: no unexpected permission prompts or blocking UI</li>
+  </ul>
+
+  <h2>Android 14 / 15 (API 34 / 35)</h2>
+  <ul>
+    <li><label><input type="checkbox"> Compatibility with newer intent behavior</label> — expected: deep links and share intents still work</li>
+    <li><label><input type="checkbox"> Background task restrictions</label> — expected: background jobs and scheduled tasks behave per policy</li>
+  </ul>
+
+  <h2>Android 16 / 17 (latest)</h2>
+  <ul>
+    <li><label><input type="checkbox"> Verify app on latest Android preview/runtime</label> — expected: no new crashes; UI layout acceptable</li>
+    <li><label><input type="checkbox"> Check new privacy/storage APIs</label> — expected: app either adapts or degrades gracefully</li>
+  </ul>
+
+  <h2>Notes & Reporting</h2>
+  <ul>
+    <li>Record device/emulator model, API level, build variant, and reproduction steps for any failure.</li>
+    <li>If a blocker is found, add a follow-up todo in the session and include logcat, steps, and a screenshot.</li>
+    <li>Target: run Common Smoke Tests on at least one device per major API group and run version-specific tests on at least one device/emulator per listed API.</li>
+  </ul>
+
+  <p>Checklist file path: <code>docs/test-checklists/android-migration-checklist.html</code></p>
+</body>
+</html>
