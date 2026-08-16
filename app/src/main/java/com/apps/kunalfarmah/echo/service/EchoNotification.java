@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -409,6 +410,9 @@ public class EchoNotification extends Service {
             smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
         }
 
+        updateRemoteViewsPrevNext(views);
+        updateRemoteViewsPrevNext(smallviews);
+
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
             buildMediaNotification();
         }
@@ -690,8 +694,20 @@ public class EchoNotification extends Service {
     }
 
 
+    private void updateRemoteViewsPrevNext(RemoteViews views) {
+        if (views == null) return;
+        boolean hasPrev = MediaUtils.INSTANCE.getMediaPlayer().hasPreviousMediaItem();
+        boolean hasNext = MediaUtils.INSTANCE.getMediaPlayer().hasNextMediaItem();
+
+        views.setViewVisibility(R.id.previousbutton_not, hasPrev ? View.VISIBLE : View.INVISIBLE);
+        views.setViewVisibility(R.id.nextbutton_not, hasNext ? View.VISIBLE : View.INVISIBLE);
+    }
+
+
     public void updateNotiUI() {
         getApplicationContext().getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE).edit().putLong("albumId", albumID).apply();
+        updateRemoteViewsPrevNext(views);
+        updateRemoteViewsPrevNext(smallviews);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S)
             buildMediaNotification();
         else
