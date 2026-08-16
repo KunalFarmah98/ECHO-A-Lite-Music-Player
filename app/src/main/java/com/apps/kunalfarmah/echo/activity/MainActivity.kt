@@ -278,10 +278,18 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
+                // If there are fragments in the backstack (e.g., AlbumTracks or Help), pop them
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                    return
+                }
+
                 var fragment = supportFragmentManager.findFragmentByTag(MainScreenFragment.TAG)
 
                 if (fragment != null && fragment.isVisible) {
-                    finish()
+                    // Supporting predictive back: disable callback and let system handle the exit
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
                     return
                 }
 
@@ -305,8 +313,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                // If no other conditions match, we might want to disable the callback and call onBackPressed
-                // or just finish the activity. Since this is the MainActivity, finish() is appropriate.
+                // If no other conditions match and backstack is empty, let system handle the exit
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
             }
