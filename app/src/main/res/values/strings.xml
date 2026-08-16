@@ -74,5 +74,7 @@ or pulling down the notification panel to do the same.</string>
     <string name="visualizer_gif">visualizer gif</string>
     <string name="switch_between_albumart_and_visualizer">Switch between Album Art and Visualizer</string>
     <string name="album_art">album art</string>
-
+    <string name="total_songs">%1$d Songs</string>
+    <string name="total_songs_info">%1$d Songs \u2022 %2$s</string>
+    <string name="total_albums_info">%1$d Albums \u2022 %2$d Songs \u2022 %3$s</string>
 </resources>

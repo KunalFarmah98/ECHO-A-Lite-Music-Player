@@ -38,6 +38,7 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
         get() = _albumsList
 
     private var list: List<Songs>?=null
+    private var totalDuration: Long = 0L
     private var listAlbums: List<SongAlbum>?=null
     private var albumSongs: List<Songs>?=null
 
@@ -52,11 +53,14 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
     fun getAllSongs() {
         viewModelScope.launch {
             isLoading.value = true
-            list = songsRepository.getSongsFromPhone()
+            val (songsList,duration) = songsRepository.getSongsFromPhone()
+            list = songsList
+            totalDuration = duration
         }.invokeOnCompletion {
             songsList.value = list?:ArrayList()
             MediaUtils.allSongsList = (list ?: ArrayList()) as ArrayList<Songs>
             MediaUtils.setMediaItems()
+            MediaUtils.totalDuration = totalDuration
             isLoading.value = false
         }
     }
@@ -71,9 +75,5 @@ constructor(private val songsRepository: SongsRepository) : ViewModel() {
         viewModelScope.launch {
             albumSongs = songsRepository.getSongsByAlbum(id)
         }.invokeOnCompletion { albumSongsList.value = albumSongs }
-    }
-
-    fun setPlayStatus(play:Boolean){
-        MediaUtils.isSongPlaying.value = play
     }
 }

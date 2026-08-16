@@ -14,13 +14,17 @@ import com.apps.kunalfarmah.echo.databinding.GridItemBinding
 import com.apps.kunalfarmah.echo.fragment.AlbumTracksFragment
 import com.apps.kunalfarmah.echo.fragment.OfflineAlbumsFragment
 import com.apps.kunalfarmah.echo.model.SongAlbum
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
-class OfflineAlbumsAdapter(context: Context, list: List<SongAlbum>) : RecyclerView.Adapter<OfflineAlbumsAdapter.AlbumsViewHolder>() {
+class OfflineAlbumsAdapter(context: Context, list: List<SongAlbum>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var mContext = context
     var albums = list
+
+    private val VIEW_TYPE_ITEM = 0
+    private val VIEW_TYPE_FOOTER = 1
 
     class AlbumsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var binding: GridItemBinding? = null
@@ -46,24 +50,46 @@ class OfflineAlbumsAdapter(context: Context, list: List<SongAlbum>) : RecyclerVi
 
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumsViewHolder {
-        return AlbumsViewHolder(GridItemBinding.inflate(LayoutInflater.from(mContext)).root)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == VIEW_TYPE_FOOTER) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_footer, parent, false)
+            return FooterViewHolder(view)
+        }
+        return AlbumsViewHolder(GridItemBinding.inflate(LayoutInflater.from(mContext), parent, false).root)
     }
 
-    override fun onBindViewHolder(holder: AlbumsViewHolder, position: Int) {
-        val album = albums[position]
-        holder.bind(album)
-        holder.binding?.root?.setOnClickListener {
-            OfflineAlbumsFragment.postion = position
-            (mContext as MainActivity).supportFragmentManager
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is AlbumsViewHolder) {
+            val album = albums[position]
+            holder.bind(album)
+            holder.binding?.root?.setOnClickListener {
+                OfflineAlbumsFragment.postion = position
+                (mContext as MainActivity).supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.details_fragment, AlbumTracksFragment(album._id, album._name), AlbumTracksFragment.TAG)
+                    .replace(
+                        R.id.details_fragment,
+                        AlbumTracksFragment(album._id, album._name),
+                        AlbumTracksFragment.TAG
+                    )
                     .addToBackStack(AlbumTracksFragment.TAG)
                     .commit()
+            }
+        } else if (holder is FooterViewHolder) {
+            val totalDuration = MediaUtils.getDuration(MediaUtils.totalDuration)
+            holder.totalAlbums.text = mContext.getString(R.string.total_albums_info, albums.size, MediaUtils.allSongsList.size, totalDuration)
         }
     }
 
+    override fun getItemViewType(position: Int): Int {
+        return if (position == albums.size) VIEW_TYPE_FOOTER else VIEW_TYPE_ITEM
+    }
+
     override fun getItemCount(): Int {
-        return albums.size
+        return albums.size + 1
+    }
+
+    class FooterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val totalAlbums: android.widget.TextView = view.findViewById(R.id.totalSongs)
     }
 }

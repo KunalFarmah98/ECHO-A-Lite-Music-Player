@@ -9,6 +9,7 @@ import com.apps.kunalfarmah.echo.database.CacheMapper
 import com.apps.kunalfarmah.echo.database.dao.EchoDao
 import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.model.Songs
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.LinkedHashSet
 
@@ -19,13 +20,9 @@ class SongsRepository(
 ){
 
     suspend fun fetchSongs(){
-        val songs = getSongsFromPhone()
+        val songs = getSongsFromPhone().first
         echoDao.deleteAllSongs()
         echoDao.insertAll(cacheMapper.mapToEntityList(songs))
-    }
-
-    suspend fun getAllSongs(): List<Songs> {
-        return cacheMapper.mapFromEntityList(echoDao.getSongs())
     }
 
     suspend fun fetchAlbums(){
@@ -43,11 +40,12 @@ class SongsRepository(
     }
 
 
-    suspend fun getSongsFromPhone(): ArrayList<Songs> {
+    suspend fun getSongsFromPhone(): Pair<ArrayList<Songs>, Long> {
 
         val songs = LinkedHashSet<Songs>()
         val contentResolver = context.contentResolver
         val songURI: Uri
+        var durationInSeconds = 0L
         try {
             songURI =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -59,7 +57,7 @@ class SongsRepository(
                 }
         }
         catch (e: Exception){
-            return ArrayList(songs)
+            return Pair(ArrayList(songs),durationInSeconds)
         }
         // all music files larger than 30 seconds and are not recordings
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} <> 0 AND ${MediaStore.Audio.Media.DURATION} > 30000 AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE 'AUD%' AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE '%RECORD%' AND ${MediaStore.Audio.Media.TITLE.uppercase()} NOT LIKE 'PTT%'"
@@ -75,6 +73,7 @@ class SongsRepository(
             val dateModified = songCursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED)
             val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
             val songAlbumName = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
+            val songDuration = songCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)
 
             fun addSong(cursor: Cursor){
                 // getting the data from the indices
@@ -85,7 +84,7 @@ class SongsRepository(
                 val currData = cursor.getString(songData)
                 val currDate = cursor.getLong(dateModified)*1000
                 val currAlbum = cursor.getLong(songAlbum)
-
+                durationInSeconds += cursor.getString(songDuration).toLong()
                 try {
                     songs.add(Songs(currentID, currTitle,  currArtist, album, currData, currDate, currAlbum))
                 }
@@ -102,6 +101,6 @@ class SongsRepository(
             songCursor!!.close()
         }catch (_:Exception){}
 
-        return ArrayList(songs.distinctBy { it.songTitle+it.artist+it.album+(it.songAlbum?:0L) })
+        return Pair(ArrayList(songs.distinctBy { it.songTitle+it.artist+it.album+(it.songAlbum?:0L) }), durationInSeconds)
     }
 }

@@ -46,6 +46,7 @@ object MediaUtils {
      var visualizerEnabled = true
      var currAlbum = -1L
      var isShuffle = AppUtil.getAppPreferences(App.context).getBoolean(Constants.SHUFFLE, false)
+     var totalDuration = 0L
      @JvmField
      val isSongPlaying = MutableLiveData<Boolean>()
 
@@ -160,6 +161,19 @@ object MediaUtils {
                }
           })
           mediaPlayer.shuffleModeEnabled = isShuffle
+     }
+
+     fun getDuration(duration: Long): String {
+          val totalSeconds = duration / 1000
+          val hours = totalSeconds / 3600
+          val minutes = (totalSeconds % 3600) / 60
+          val seconds = totalSeconds % 60
+
+          return when {
+               hours > 0 -> "${hours} hours ${minutes} minutes ${seconds} seconds"
+               minutes > 0 -> "${minutes} minutes ${seconds} seconds"
+               else -> "${seconds} seconds"
+          }
      }
 
      fun updateCurrentSongIndex() {
