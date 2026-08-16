@@ -1,6 +1,7 @@
 package com.apps.kunalfarmah.echo.repository
 
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -75,21 +76,25 @@ class SongsRepository(
             val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
             val songAlbumName = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
 
-            while (songCursor.moveToNext()) {
+            fun addSong(cursor: Cursor){
                 // getting the data from the indices
-                val currentID = songCursor.getLong(songId)
-                val currTitle = songCursor.getString(songTitle)
-                val currArtist = songCursor.getString(songArtist)
-                val album = songCursor.getString(songAlbumName)
-                val currData = songCursor.getString(songData)
-                val currDate = songCursor.getLong(dateModified)*1000
-                val currAlbum = songCursor.getLong(songAlbum)
+                val currentID = cursor.getLong(songId)
+                val currTitle = cursor.getString(songTitle)
+                val currArtist = cursor.getString(songArtist)
+                val album = cursor.getString(songAlbumName)
+                val currData = cursor.getString(songData)
+                val currDate = cursor.getLong(dateModified)*1000
+                val currAlbum = cursor.getLong(songAlbum)
 
                 try {
                     songs.add(Songs(currentID, currTitle,  currArtist, album, currData, currDate, currAlbum))
                 }
                 catch (_:Exception){
                 }
+            }
+            addSong(songCursor)
+            while (songCursor.moveToNext()) {
+               addSong(songCursor)
             }
         }
 
