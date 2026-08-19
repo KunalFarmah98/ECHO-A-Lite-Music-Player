@@ -7,7 +7,6 @@
     tools:context=".activity.MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
-        android:name="com.apps.kunalfarmah.echo.fragment.MainScreenFragment"
         android:layout_width="match_parent"
         android:id="@+id/details_fragment"
         android:layout_above="@id/now_playing_bottom_bar"
