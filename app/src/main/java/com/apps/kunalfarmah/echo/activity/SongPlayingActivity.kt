@@ -30,7 +30,7 @@ class SongPlayingActivity : AppCompatActivity() {
         supportActionBar?.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.colorPrimary)))
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM){
-            val topPadding = (50 * resources.displayMetrics.density).toInt()
+            val topPadding = (55 * resources.displayMetrics.density).toInt()
             binding.container.setPadding(0, topPadding, 0, 0)
         }
 
