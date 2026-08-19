@@ -234,7 +234,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            enableEdgeToEdge()
             binding.drawerLayout.fitsSystemWindows = false
             // handling edge to edge padding for top and bottom bars
             ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
