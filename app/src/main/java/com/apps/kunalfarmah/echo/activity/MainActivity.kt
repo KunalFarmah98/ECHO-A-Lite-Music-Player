@@ -20,6 +20,8 @@ import android.os.Handler
 import android.util.Log
 import android.util.SparseArray
 import android.view.View
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -30,6 +32,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -228,7 +232,37 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         dialogBinding = PermissionDialogBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            enableEdgeToEdge()
+            binding.drawerLayout.fitsSystemWindows = false
+            // handling edge to edge padding for top and bottom bars
+            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, windowInsets ->
+                val systemBars =
+                    windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+                binding.appbarlayout.setPadding(0, systemBars.top, 0, 0)
+                binding.mainLayout.bottomNav.setPadding(0, 0, 0, systemBars.bottom)
+                binding.header.setPadding(0, systemBars.top, 0, 0)
+                binding.navRecyclerView.setPadding(0, 0, 0, systemBars.bottom)
+                windowInsets
+            }
+            // preserving statusbar theme
+            val windowInsetsController =
+                ViewCompat.getWindowInsetsController(window.decorView)
+            windowInsetsController?.isAppearanceLightStatusBars = false
+            windowInsetsController?.isAppearanceLightNavigationBars = false
+        } else {
+            window.statusBarColor = Color.TRANSPARENT
+            window.decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            ViewCompat.setOnApplyWindowInsetsListener(binding.header) { view, windowInsets ->
+                val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+                view.setPadding(0, systemBars.top, 0, 0)
+                windowInsets
+            }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             handleRecordAudioPermission()
         }
         sharedPreferences = getSharedPreferences(Constants.APP_PREFS,Context.MODE_PRIVATE)
@@ -246,6 +280,56 @@ class MainActivity : AppCompatActivity() {
         fragments!![3] = SearchFragment()
 
         viewModel.init()
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+                if (Statified.drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
+                    Statified.drawerLayout!!.closeDrawer(GravityCompat.START)
+                    return
+                }
+
+                // If there are fragments in the backstack (e.g., AlbumTracks or Help), pop them
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                    return
+                }
+
+                var fragment = supportFragmentManager.findFragmentByTag(MainScreenFragment.TAG)
+
+                if (fragment != null && fragment.isVisible) {
+                    // Supporting predictive back: disable callback and let system handle the exit
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                    return
+                }
+
+                fragment = supportFragmentManager.findFragmentByTag(FavoriteFragment.TAG)
+
+                if (fragment != null && fragment.isVisible) {
+                    findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
+                    return
+                }
+
+                fragment = supportFragmentManager.findFragmentByTag(OfflineAlbumsFragment.TAG)
+                if (fragment != null && fragment.isVisible) {
+                    findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
+                    OfflineAlbumsFragment.postion=0
+                    return
+                }
+
+                fragment = supportFragmentManager.findFragmentByTag(SearchFragment.TAG)
+                if (fragment != null && fragment.isVisible) {
+                    findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
+                    return
+                }
+
+                // If no other conditions match and backstack is empty, let system handle the exit
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            }
+        })
+
         /*This syntax is used to access the objects inside the class*/
         MainActivity.Statified.drawerLayout = findViewById(R.id.drawer_layout)
 
@@ -364,42 +448,5 @@ class MainActivity : AppCompatActivity() {
 
     fun moveToHome() {
         bottomNav!!.selectedItemId = R.id.navigation_main_screen
-    }
-
-    override fun onBackPressed() {
-
-
-        if (Statified.drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
-            Statified.drawerLayout!!.closeDrawer(GravityCompat.START)
-        }
-
-        var fragment = supportFragmentManager.findFragmentByTag(MainScreenFragment.TAG)
-
-        if (fragment != null && fragment.isVisible) {
-            finish()
-            return
-        }
-
-        fragment = supportFragmentManager.findFragmentByTag(FavoriteFragment.TAG)
-
-        if (fragment != null && fragment.isVisible) {
-            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
-            return
-        }
-
-        fragment = supportFragmentManager.findFragmentByTag(OfflineAlbumsFragment.TAG)
-        if (fragment != null && fragment.isVisible) {
-            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
-            OfflineAlbumsFragment.postion=0
-            return
-        }
-
-        fragment = supportFragmentManager.findFragmentByTag(SearchFragment.TAG)
-        if (fragment != null && fragment.isVisible) {
-            findViewById<BottomNavigationView>(R.id.bottom_nav)?.selectedItemId = R.id.navigation_main_screen
-            return
-        }
-
-        super.onBackPressed()
     }
 }

@@ -20,7 +20,12 @@ import com.apps.kunalfarmah.echo.util.MediaUtils.mediaPlayer
 import com.bumptech.glide.Glide
 import kotlin.math.max
 
-class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<FavoriteAdapter.MyViewHolder>() {
+class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        private const val VIEW_TYPE_ITEM = 0
+        private const val VIEW_TYPE_FOOTER = 1
+    }
 
     /*Local variables used for storing the data sent from the fragment to be used in the adapter
     * These variables are initially null*/
@@ -34,122 +39,137 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val songObject = songDetails?.get(position)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is MyViewHolder) {
+            val songObject = songDetails?.get(position)
 
-        if (MediaUtils.isFavouritesPlaying && MediaUtils.currInd == position) {
-            try{
-                holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
+            if (MediaUtils.isFavouritesPlaying && MediaUtils.currInd == position) {
+                try {
+                    holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
+                } catch (_: Exception) {
+                    holder.binding.contentRow.strokeWidth = 2
+                    holder.binding.contentRow.strokeColor =
+                        mContext?.resources?.getColor(R.color.colorAccent)!!
+                }
+            } else {
+                try {
+                    holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.colorPrimary)!!)
+                } catch (_: Exception) {
+                    holder.binding.contentRow.strokeWidth = 0
+                    holder.binding.contentRow.strokeColor =
+                        mContext?.resources?.getColor(R.color.colorPrimary)!!
+                }
             }
-            catch (_: Exception) {
-                holder.binding.contentRow.strokeWidth = 2
-                holder.binding.contentRow.strokeColor =
-                    mContext?.resources?.getColor(R.color.colorAccent)!!
-            }
-        }
-        else{
-            try{
-                holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.colorPrimary)!!)
-            }
-            catch (_: Exception) {
-                holder.binding.contentRow.strokeWidth = 0
-                holder.binding.contentRow.strokeColor =
-                    mContext?.resources?.getColor(R.color.colorPrimary)!!
-            }
-        }
 
-        /*The holder object of our MyViewHolder class has two properties i.e
+            /*The holder object of our MyViewHolder class has two properties i.e
         * trackTitle for holding the name of the song and
         * trackArtist for holding the name of the artist*/
-        holder.binding.trackTitle?.text = songObject?.songTitle
-        holder.binding.trackArtist?.text = songObject?.artist
-        holder.binding.trackAlbum?.text = songObject?.album
+            holder.binding.trackTitle?.text = songObject?.songTitle
+            holder.binding.trackArtist?.text = songObject?.artist
+            holder.binding.trackAlbum?.text = songObject?.album
 
-        if(holder.binding.trackTitle?.text?.equals("<unknown>") == true)
-            holder.binding.trackTitle?.text="unknown"
+            if (holder.binding.trackTitle?.text?.equals("<unknown>") == true)
+                holder.binding.trackTitle?.text = "unknown"
 
-        if(holder.binding.trackArtist?.text ?.equals("<unknown>") == true)
-            holder.binding.trackArtist?.text ="unknown"
+            if (holder.binding.trackArtist?.text?.equals("<unknown>") == true)
+                holder.binding.trackArtist?.text = "unknown"
 
-        if(holder.binding.trackAlbum?.text ?.equals("<unknown>") == true)
-            holder.binding.trackAlbum?.text ="unknown"
+            if (holder.binding.trackAlbum?.text?.equals("<unknown>") == true)
+                holder.binding.trackAlbum?.text = "unknown"
 
-        var albumId = songObject?.songAlbum as Long
+            var albumId = songObject?.songAlbum as Long
 
-        if(albumId<=0L) holder.binding.album!!.setImageDrawable(mContext!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-        val sArtworkUri: Uri = Uri
+            if (albumId <= 0L) holder.binding.album!!.setImageDrawable(mContext!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+            val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
-        val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        mContext?.let { holder.binding.album?.let { it1 -> Glide.with(it).load(uri).placeholder(R.drawable.now_playing_bar_eq_image).into(it1) } }
+            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
+            mContext?.let {
+                holder.binding.album?.let { it1 ->
+                    Glide.with(it).load(uri).placeholder(R.drawable.now_playing_bar_eq_image).into(it1)
+                }
+            }
 //        var art = getAlbumart(albumId)
 //
 //        if(art!=null) holder.binding.trackArt?.setImageBitmap(art)
 //        else holder.binding.trackArt?.setImageDrawable(mContext?.resources?.getDrawable(R.drawable.now_playing_bar_eq_image))
 
-        /*Handling the click event i.e. the action which happens when we click on any song*/
-        holder.binding.contentRow.setOnClickListener {
+            /*Handling the click event i.e. the action which happens when we click on any song*/
+            holder.binding.contentRow.setOnClickListener {
 
-            /*Let's discuss this peice of code*/
-            /*Firstly we define an object of the SongPlayingFragment*/
-            val intent = Intent(mContext,SongPlayingActivity::class.java)
-            notifyItemChanged(max(MediaUtils.getSongIndex(),0))
-            MediaUtils.currSong = songObject
+                /*Let's discuss this peice of code*/
+                /*Firstly we define an object of the SongPlayingFragment*/
+                val intent = Intent(mContext, SongPlayingActivity::class.java)
+                notifyItemChanged(max(MediaUtils.getSongIndex(), 0))
+                MediaUtils.currSong = songObject
 
-            /*A bundle is used to transfer data from one point in your activity to another
+                /*A bundle is used to transfer data from one point in your activity to another
             * Here we create an object of Bundle to send the sond details to the fragment so that we can display the song details there and also play the song*/
-            /*putString() function is used for adding a string to the bundle object
+                /*putString() function is used for adding a string to the bundle object
             * the string written in green is the name of the string which is placed in the bundle object with the value of that string written alongside
             * Note: Remember the name of the strings/entities you place inside the bundle object as you will retrieve them later using the same name. And these names are case-sensitive*/
-            intent.putExtra("songArtist", songObject.artist)
-            intent.putExtra("songTitle", songObject.songTitle)
-            intent.putExtra("path", songObject.songData)
-            intent.putExtra("SongID", songObject.songID)
-            intent.putExtra("songPosition", position)
-            intent.putExtra("songAlbum", songObject.songAlbum as Long)
-            intent.`package` = mContext?.packageName
+                intent.putExtra("songArtist", songObject.artist)
+                intent.putExtra("songTitle", songObject.songTitle)
+                intent.putExtra("path", songObject.songData)
+                intent.putExtra("SongID", songObject.songID)
+                intent.putExtra("songPosition", position)
+                intent.putExtra("songAlbum", songObject.songAlbum as Long)
+                intent.`package` = mContext?.packageName
 
-            MediaUtils.songsList = songDetails?: ArrayList()
-            MediaUtils.setMediaItems()
-            stopPlaying(intent)
+                MediaUtils.songsList = songDetails ?: ArrayList()
+                MediaUtils.setMediaItems()
+                stopPlaying(intent)
 
-            try{
-                holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
+                try {
+                    holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
 
+                } catch (_: Exception) {
+                    holder.binding.contentRow.strokeWidth = 2
+                    holder.binding.contentRow.strokeColor =
+                        mContext?.resources?.getColor(R.color.colorAccent)!!
+                }
+
+                MediaUtils.isAllSongsPLaying = false
+                MediaUtils.isAlbumPlaying = false
+                MediaUtils.currAlbum = -1
+                MediaUtils.isFavouritesPlaying = true
+
+                /*Now after placing the song details inside the bundle, we inflate the song playing fragment*/
+                (mContext as FragmentActivity).startActivity(intent)
             }
-            catch (_: Exception) {
-                holder.binding.contentRow.strokeWidth = 2
-                holder.binding.contentRow.strokeColor =
-                    mContext?.resources?.getColor(R.color.colorAccent)!!
-            }
-
-            MediaUtils.isAllSongsPLaying = false
-            MediaUtils.isAlbumPlaying = false
-            MediaUtils.currAlbum = -1
-            MediaUtils.isFavouritesPlaying = true
-
-            /*Now after placing the song details inside the bundle, we inflate the song playing fragment*/
-            (mContext as FragmentActivity).startActivity(intent)
+        } else if (holder is FooterViewHolder) {
+            val totalDurationMs = songDetails?.sumOf { MediaUtils.songDurations[it.songID] ?: 0L } ?: 0L
+            val totalDuration = MediaUtils.getDuration(totalDurationMs)
+            holder.totalSongs.text = mContext?.getString(R.string.total_songs_info, songDetails?.size ?: 0, totalDuration)
         }
     }
 
     /*This has the same implementation which we did for the navigation drawer adapter*/
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == VIEW_TYPE_FOOTER) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_footer, parent, false)
+            return FooterViewHolder(view)
+        }
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.row_custom_mainscreen_adapter, parent, false)
         return MyViewHolder(itemView)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == songDetails?.size) VIEW_TYPE_FOOTER else VIEW_TYPE_ITEM
     }
 
     override fun getItemCount(): Int {
 
         /*If the array list for the songs is null i.e. there are no songs in your device
         * then we return 0 and no songs are displayed*/
-        if (songDetails == null) {
+        if (songDetails == null || songDetails?.size == 0) {
             return 0
         }
 
         /*Else we return the total size of the song details which will be the total number of song details*/
         else {
-            return (songDetails as ArrayList<Songs>).size
+            return (songDetails as ArrayList<Songs>).size + 1
         }
     }
 
@@ -157,6 +177,10 @@ class FavoriteAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Recyc
     class MyViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         
         val binding = RowCustomMainscreenAdapterBinding.bind(view)
+    }
+
+    class FooterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val totalSongs: android.widget.TextView = view.findViewById(R.id.totalSongs)
     }
 
     private fun stopPlaying(intent: Intent) {

@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingVertical="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp"
         tools:context=".activity.HelpActivity">
 
         <TextView

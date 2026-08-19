@@ -28,16 +28,18 @@ import kotlin.math.max
 
 /*This adapter class also serves the same function to act as a bridge between the single row view and its data. The implementation is quite similar to the one we did
 * for the navigation drawer adapter*/
-class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<MainScreenAdapter.MyViewHolder>() {
+class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        private const val VIEW_TYPE_ITEM = 0
+        private const val VIEW_TYPE_FOOTER = 1
+    }
 
     /*Local variables used for storing the data sent from the fragment to be used in the adapter
     * These variables are initially null*/
     var songDetails: ArrayList<Songs>? = null
     var mContext: Context? = null
     var sharedPreferences: SharedPreferences
-    var binding: RowCustomMainscreenAdapterBinding?=null
-
-    public get() = binding
 
     object Statified{
         var stopPlayingCalled = false
@@ -50,110 +52,127 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         sharedPreferences = AppUtil.getAppPreferences(mContext)
     }
     @SuppressLint("UseCompatLoadingForDrawables")
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val songObject = songDetails?.get(position)
-        if(MediaUtils.isAllSongsPLaying && position == MediaUtils.currInd){
-            try {
-                holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
-            }
-            catch (_: Exception){
-                holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
-                holder.binding?.contentRow?.strokeWidth = 2
-            }
-        }
-        else{
-            try {
-                holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.colorPrimary)!!)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is MyViewHolder) {
+            val songObject = songDetails?.get(position)
+            if (MediaUtils.isAllSongsPLaying && position == MediaUtils.currInd) {
+                try {
+                    holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
+                } catch (_: Exception) {
+                    holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
+                    holder.binding?.contentRow?.strokeWidth = 2
+                }
+            } else {
+                try {
+                    holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.colorPrimary)!!)
 
+                } catch (_: Exception) {
+                    holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorPrimary)!!
+                    holder.binding?.contentRow?.strokeWidth = 0
+                }
             }
-            catch (_: Exception){
-                holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorPrimary)!!
-                holder.binding?.contentRow?.strokeWidth = 0
-            }
-        }
 
-        /*The holder object of our MyViewHolder class has two properties i.e
+            /*The holder object of our MyViewHolder class has two properties i.e
         * trackTitle for holding the name of the song and
         * trackArtist for holding the name of the artist*/
 
-        holder.binding?.trackTitle?.text = songObject?.songTitle
-        holder.binding?.trackArtist?.text = songObject?.artist
-        holder.binding?.trackAlbum?.text = songObject?.album
+            holder.binding?.trackTitle?.text = songObject?.songTitle
+            holder.binding?.trackArtist?.text = songObject?.artist
+            holder.binding?.trackAlbum?.text = songObject?.album
 
-        if(holder.binding?.trackTitle?.text?.equals("<unknown>") == true)
-            holder.binding?.trackTitle?.text="unknown"
+            if (holder.binding?.trackTitle?.text?.equals("<unknown>") == true)
+                holder.binding?.trackTitle?.text = "unknown"
 
-        if(holder.binding?.trackArtist?.text ?.equals("<unknown>") == true)
-            holder.binding?.trackArtist?.visibility = View.GONE
+            if (holder.binding?.trackArtist?.text?.equals("<unknown>") == true)
+                holder.binding?.trackArtist?.visibility = View.GONE
 
-        if(holder.binding?.trackAlbum?.text ?.equals("<unknown>") == true)
-            holder.binding?.trackAlbum?.text = "Unknown Album"
+            if (holder.binding?.trackAlbum?.text?.equals("<unknown>") == true)
+                holder.binding?.trackAlbum?.text = "Unknown Album"
 
-        var albumId = songObject?.songAlbum as Long
-        //var art: Bitmap? =null
+            var albumId = songObject?.songAlbum as Long
+            //var art: Bitmap? =null
 
-        if(albumId<=0L) holder.binding!!.album!!.setImageDrawable(mContext!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
-        val sArtworkUri: Uri = Uri
+            if (albumId <= 0L) holder.binding!!.album!!.setImageDrawable(mContext!!.resources.getDrawable(R.drawable.now_playing_bar_eq_image))
+            val sArtworkUri: Uri = Uri
                 .parse("content://media/external/audio/albumart")
-        val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
-        mContext?.let { holder.binding?.album?.let { it1 -> Glide.with(it).load(uri).placeholder(R.drawable.now_playing_bar_eq_image).diskCacheStrategy(DiskCacheStrategy.ALL).into(it1) } }
-
-
-
-
-        /*Handling the click event i.e. the action which happens when we click on any song*/
-        holder.binding?.contentRow?.setOnClickListener {
-            val intent = Intent(mContext,SongPlayingActivity::class.java)
-            notifyItemChanged(max(MediaUtils.getSongIndex(),0))
-            MediaUtils.currSong = songObject
-            MediaUtils.isAllSongsPLaying = true
-            MediaUtils.isAlbumPlaying = false
-            MediaUtils.currAlbum = -1
-            MediaUtils.isFavouritesPlaying = false
-
-            intent.putExtra("songArtist", songObject.artist)
-            intent.putExtra("songTitle", songObject.songTitle)
-            intent.putExtra("path", songObject.songData)
-            intent.putExtra("SongID", songObject.songID)
-            intent.putExtra("songAlbum", songObject.songAlbum?:-1)
-            intent.putExtra("album", songObject.album)
-            intent.putExtra("songPosition", position)
-            intent.`package` = mContext?.packageName
-            MediaUtils.songsList = songDetails?: ArrayList()
-            MediaUtils.setMediaItems()
-
-            stopPlaying(intent)
-            mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
-
-            try {
-                holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
-            }
-            catch (_: Exception){
-                holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
-                holder.binding?.contentRow?.strokeWidth = 2
+            val uri: Uri = ContentUris.withAppendedId(sArtworkUri, albumId)
+            mContext?.let {
+                holder.binding?.album?.let { it1 ->
+                    Glide.with(it).load(uri).placeholder(R.drawable.now_playing_bar_eq_image)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(it1)
+                }
             }
 
-            (mContext as MainActivity).startActivity(intent)
+
+
+
+            /*Handling the click event i.e. the action which happens when we click on any song*/
+            holder.binding?.contentRow?.setOnClickListener {
+                val intent = Intent(mContext, SongPlayingActivity::class.java)
+                notifyItemChanged(max(MediaUtils.getSongIndex(), 0))
+                MediaUtils.currSong = songObject
+                MediaUtils.isAllSongsPLaying = true
+                MediaUtils.isAlbumPlaying = false
+                MediaUtils.currAlbum = -1
+                MediaUtils.isFavouritesPlaying = false
+
+                intent.putExtra("songArtist", songObject.artist)
+                intent.putExtra("songTitle", songObject.songTitle)
+                intent.putExtra("path", songObject.songData)
+                intent.putExtra("SongID", songObject.songID)
+                intent.putExtra("songAlbum", songObject.songAlbum ?: -1)
+                intent.putExtra("album", songObject.album)
+                intent.putExtra("songPosition", position)
+                intent.`package` = mContext?.packageName
+                MediaUtils.songsList = songDetails ?: ArrayList()
+                MediaUtils.setMediaItems()
+
+                stopPlaying(intent)
+                mediaPlayer.repeatMode = Player.REPEAT_MODE_OFF
+
+                try {
+                    holder.binding?.cardContent?.setBackgroundColor(mContext?.resources?.getColor(R.color.white_overlay_15_percent)!!)
+                } catch (_: Exception) {
+                    holder.binding?.contentRow?.strokeColor = mContext?.resources?.getColor(R.color.colorAccent)!!
+                    holder.binding?.contentRow?.strokeWidth = 2
+                }
+
+                (mContext as MainActivity).startActivity(intent)
+            }
+        } else if (holder is FooterViewHolder) {
+            val totalDurationMs = songDetails?.sumOf { MediaUtils.songDurations[it.songID] ?: 0L } ?: 0L
+            val totalDuration = MediaUtils.getDuration(totalDurationMs)
+            holder.totalSongs.text = mContext?.getString(R.string.total_songs_info, songDetails?.size ?: 0, totalDuration)
         }
     }
 
     /*This has the same implementation which we did for the navigation drawer adapter*/
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == VIEW_TYPE_FOOTER) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_footer, parent, false)
+            return FooterViewHolder(view)
+        }
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.row_custom_mainscreen_adapter, parent, false)
         return MyViewHolder(itemView)
     }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == songDetails?.size) VIEW_TYPE_FOOTER else VIEW_TYPE_ITEM
+    }
+
     override fun getItemCount(): Int {
 
         /*If the array list for the songs is null i.e. there are no songs in your device
         * then we return 0 and no songs are displayed*/
-        if (songDetails == null) {
+        if (songDetails == null || songDetails?.size == 0) {
             return 0
         }
 
         /*Else we return the total size of the song details which will be the total number of song details*/
         else {
-            return (songDetails as ArrayList<Songs>).size
+            return (songDetails as ArrayList<Songs>).size + 1
         }
     }
 
@@ -165,6 +184,10 @@ class MainScreenAdapter(_songDetails: ArrayList<Songs>, _context: Context) : Rec
         init {
             binding = RowCustomMainscreenAdapterBinding.bind(view)
         }
+    }
+
+    class FooterViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val totalSongs: android.widget.TextView = view.findViewById(R.id.totalSongs)
     }
 
 

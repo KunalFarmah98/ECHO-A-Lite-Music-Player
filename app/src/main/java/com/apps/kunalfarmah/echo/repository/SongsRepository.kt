@@ -1,6 +1,7 @@
 package com.apps.kunalfarmah.echo.repository
 
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -8,6 +9,7 @@ import com.apps.kunalfarmah.echo.database.CacheMapper
 import com.apps.kunalfarmah.echo.database.dao.EchoDao
 import com.apps.kunalfarmah.echo.model.SongAlbum
 import com.apps.kunalfarmah.echo.model.Songs
+import com.apps.kunalfarmah.echo.util.MediaUtils
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.LinkedHashSet
 
@@ -21,10 +23,6 @@ class SongsRepository(
         val songs = getSongsFromPhone()
         echoDao.deleteAllSongs()
         echoDao.insertAll(cacheMapper.mapToEntityList(songs))
-    }
-
-    suspend fun getAllSongs(): List<Songs> {
-        return cacheMapper.mapFromEntityList(echoDao.getSongs())
     }
 
     suspend fun fetchAlbums(){
@@ -47,6 +45,7 @@ class SongsRepository(
         val songs = LinkedHashSet<Songs>()
         val contentResolver = context.contentResolver
         val songURI: Uri
+        var durationInSeconds = 0L
         try {
             songURI =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -74,22 +73,29 @@ class SongsRepository(
             val dateModified = songCursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED)
             val songAlbum = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
             val songAlbumName = songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
+            val songDuration = songCursor.getColumnIndex(MediaStore.Audio.Media.DURATION)
 
-            while (songCursor.moveToNext()) {
+            fun addSong(cursor: Cursor){
                 // getting the data from the indices
-                val currentID = songCursor.getLong(songId)
-                val currTitle = songCursor.getString(songTitle)
-                val currArtist = songCursor.getString(songArtist)
-                val album = songCursor.getString(songAlbumName)
-                val currData = songCursor.getString(songData)
-                val currDate = songCursor.getLong(dateModified)*1000
-                val currAlbum = songCursor.getLong(songAlbum)
-
+                val currentID = cursor.getLong(songId)
+                val currTitle = cursor.getString(songTitle)
+                val currArtist = cursor.getString(songArtist)
+                val album = cursor.getString(songAlbumName)
+                val currData = cursor.getString(songData)
+                val currDate = cursor.getLong(dateModified)*1000
+                val currAlbum = cursor.getLong(songAlbum)
+                val duration = cursor.getString(songDuration).toLong()
+                durationInSeconds += duration
+                MediaUtils.songDurations[currentID] = duration
                 try {
                     songs.add(Songs(currentID, currTitle,  currArtist, album, currData, currDate, currAlbum))
                 }
                 catch (_:Exception){
                 }
+            }
+            addSong(songCursor)
+            while (songCursor.moveToNext()) {
+               addSong(songCursor)
             }
         }
 

@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
 
@@ -34,7 +35,6 @@ import com.apps.kunalfarmah.echo.activity.SongPlayingActivity;
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment;
 import com.apps.kunalfarmah.echo.util.Constants;
 import com.apps.kunalfarmah.echo.util.MediaUtils;
-import com.apps.kunalfarmah.echo.viewModel.SongsViewModel;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.FileDescriptor;
@@ -55,8 +55,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class EchoNotification extends Service {
 
 
-    @Inject
-    SongsViewModel songsViewModel;
     ArrayList<String> thoughts;
 
 
@@ -158,12 +156,12 @@ public class EchoNotification extends Service {
                 msong.setPlay(msong.playorpause());
 
                 if (msong.getPlay() == false) {
-                    songsViewModel.setPlayStatus(false);
+                    MediaUtils.isSongPlaying.postValue(false);
                     views.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
                     smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
 
                 } else {
-                    songsViewModel.setPlayStatus(true);
+                    MediaUtils.isSongPlaying.postValue(true);
                     views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                     smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 }
@@ -173,13 +171,13 @@ public class EchoNotification extends Service {
 
             } else if (null != intent && intent.getAction() != null
                     && intent.getAction().equals(Constants.ACTION.CHANGE_TO_PAUSE)) {
-                songsViewModel.setPlayStatus(true);
+                MediaUtils.isSongPlaying.postValue(true);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.pause_icon);
                 updateNotiUI();
             } else if (null != intent && intent.getAction() != null
                     && intent.getAction().equals(Constants.ACTION.CHANGE_TO_PLAY)) {
-                songsViewModel.setPlayStatus(false);
+                MediaUtils.isSongPlaying.postValue(false);
                 views.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
                 smallviews.setImageViewResource(R.id.playpausebutton_not, R.drawable.play_icon);
 
@@ -411,6 +409,9 @@ public class EchoNotification extends Service {
             views.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
             smallviews.setImageViewResource(R.id.song_image, R.drawable.now_playing_bar_eq_image);
         }
+
+        updateRemoteViewsPrevNext(views);
+        updateRemoteViewsPrevNext(smallviews);
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
             buildMediaNotification();
@@ -693,8 +694,20 @@ public class EchoNotification extends Service {
     }
 
 
+    private void updateRemoteViewsPrevNext(RemoteViews views) {
+        if (views == null) return;
+        boolean hasPrev = MediaUtils.INSTANCE.getMediaPlayer().hasPreviousMediaItem();
+        boolean hasNext = MediaUtils.INSTANCE.getMediaPlayer().hasNextMediaItem();
+
+        views.setViewVisibility(R.id.previousbutton_not, hasPrev ? View.VISIBLE : View.INVISIBLE);
+        views.setViewVisibility(R.id.nextbutton_not, hasNext ? View.VISIBLE : View.INVISIBLE);
+    }
+
+
     public void updateNotiUI() {
         getApplicationContext().getSharedPreferences(Constants.APP_PREFS, Context.MODE_PRIVATE).edit().putLong("albumId", albumID).apply();
+        updateRemoteViewsPrevNext(views);
+        updateRemoteViewsPrevNext(smallviews);
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && Build.VERSION.SDK_INT <= Build.VERSION_CODES.S)
             buildMediaNotification();
         else

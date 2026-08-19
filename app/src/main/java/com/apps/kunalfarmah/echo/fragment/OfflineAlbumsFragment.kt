@@ -66,7 +66,13 @@ class OfflineAlbumsFragment : Fragment() {
             binding!!.noSongs.visibility = View.GONE
             binding!!.Albums.visibility = View.VISIBLE
             mAdapter = OfflineAlbumsAdapter(activity as Context, it)
-            binding!!.Albums.layoutManager = (GridLayoutManager(requireContext(), 2))
+            val mLayoutManager = GridLayoutManager(requireContext(), 2)
+            mLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    return if (mAdapter?.getItemViewType(position) == 1) 2 else 1
+                }
+            }
+            binding!!.Albums.layoutManager = mLayoutManager
             binding!!.Albums.setHasFixedSize(true)
             binding!!.Albums.setItemViewCacheSize(10)
             binding!!.Albums.adapter = mAdapter

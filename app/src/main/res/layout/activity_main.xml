@@ -9,14 +9,15 @@
     tools:openDrawer="start">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbarlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <androidx.appcompat.widget.Toolbar
@@ -39,8 +40,8 @@
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true">
+        android:background="#9b2a58"
+        android:layout_gravity="start">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -57,50 +58,51 @@
                     android:layout_height="match_parent"
                     app:srcCompat="@drawable/bg_gradient" />
 
-                <RelativeLayout android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/t1"
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:padding="0dp"
-                    android:text="ECHO"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="#FFFFFF"
-                    android:textSize="70sp"
-                    android:textStyle="bold" />
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/t1"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="-10dp"
-                    android:gravity="center"
-                    android:layout_centerHorizontal="true"
-                    android:padding="0dp"
-                    android:text="A LITE MUSIC PLAYER"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/t1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:padding="0dp"
+                        android:text="ECHO"
+                        android:textColor="#FFFFFF"
+                        android:textSize="70sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/t1"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="-10dp"
+                        android:gravity="center"
+                        android:padding="0dp"
+                        android:text="A LITE MUSIC PLAYER"
+                        android:textColor="#FFFFFF"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
             </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/navRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/header"
+                android:background="@color/colorPrimary" />
 
         </RelativeLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/navRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/header"
-            android:background="@color/colorPrimary"/>
 
-    </RelativeLayout>
+    </com.google.android.material.navigation.NavigationView>
 
 
-</com.google.android.material.navigation.NavigationView>
-
-
-    </androidx.drawerlayout.widget.DrawerLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

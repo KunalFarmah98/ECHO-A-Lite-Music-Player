@@ -20,6 +20,7 @@ import android.os.ParcelFileDescriptor
 import android.view.*
 import android.widget.*
 import androidx.annotation.Nullable
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.media3.common.Player
@@ -32,7 +33,7 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mLastSh
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorListener
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.mSensorManager
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.processInformation
-import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.setSeekButtonsControl
+import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.setNavBarColor
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Staticated.updateViews
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.albumArt
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.art
@@ -54,7 +55,6 @@ import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.toolTip
 import com.apps.kunalfarmah.echo.fragment.SongPlayingFragment.Statified.updateSongTime
 import com.apps.kunalfarmah.echo.model.Songs
 import com.apps.kunalfarmah.echo.service.EchoNotification
-import com.apps.kunalfarmah.echo.service.PlaybackService
 import com.apps.kunalfarmah.echo.util.AppUtil
 import com.apps.kunalfarmah.echo.util.BottomBarUtils
 import com.apps.kunalfarmah.echo.util.Constants
@@ -297,6 +297,18 @@ class SongPlayingFragment : Fragment() {
             toolTipHandler.removeCallbacksAndMessages(null)
         }
 
+        fun setNavBarColor(colorResId: Int) {
+            if (myActivity != null) {
+                val color = ContextCompat.getColor(myActivity!!, colorResId)
+                myActivity?.window?.navigationBarColor = color
+                // For Android 15+ (API 35+), the navigation bar is forced transparent with edge-to-edge.
+                // To show a color, we set the activity's content background so it shows in the padded area.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                    myActivity?.findViewById<View>(R.id.root_view)?.setBackgroundColor(color)
+                }
+            }
+        }
+
         @SuppressLint("UseCompatLoadingForDrawables")
         fun updateViews(songtitle: String?, songartist: String?, artwork: Bitmap? = null) {
 
@@ -324,6 +336,7 @@ class SongPlayingFragment : Fragment() {
                             art?.visibility = View.GONE
                             albumArt?.visibility = View.GONE
                             controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                            setNavBarColor(R.color.four)
                         } else {
                             art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
                                 if(enabled){
@@ -341,11 +354,13 @@ class SongPlayingFragment : Fragment() {
                                         glView?.visibility = View.VISIBLE
                                         albumArt?.visibility = View.GONE
                                         controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                                        setNavBarColor(R.color.four)
                                     }
                                     else{
                                         glView?.visibility = View.GONE
                                         albumArt?.visibility = View.VISIBLE
                                         controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                                        setNavBarColor(R.color.colorPrimary)
                                     }
                                 }
                             }
@@ -357,6 +372,7 @@ class SongPlayingFragment : Fragment() {
                         glView?.visibility = View.VISIBLE
                         albumArt?.visibility = View.GONE
                         controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                        setNavBarColor(R.color.four)
                     }
                 }
             }
@@ -375,6 +391,7 @@ class SongPlayingFragment : Fragment() {
                         glView?.visibility = View.VISIBLE
                         albumArt?.visibility = View.GONE
                         controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                        setNavBarColor(R.color.four)
                     } else {
                         art?.visibility = MediaUtils.visualizerEnabled.let { enabled ->
                             if(enabled){
@@ -392,11 +409,13 @@ class SongPlayingFragment : Fragment() {
                                     glView?.visibility = View.VISIBLE
                                     albumArt?.visibility = View.GONE
                                     controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.four))
+                                    setNavBarColor(R.color.four)
                                 }
                                 else{
                                     glView?.visibility = View.GONE
                                     albumArt?.visibility = View.VISIBLE
                                     controlsView?.setBackgroundColor(myActivity!!.resources.getColor(R.color.colorPrimary))
+                                    setNavBarColor(R.color.colorPrimary)
                                 }
                             }
                         }
@@ -661,6 +680,7 @@ class SongPlayingFragment : Fragment() {
         glView?.visibility = View.GONE
         albumArt?.visibility = View.VISIBLE
         controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+        setNavBarColor(R.color.colorPrimary)
     }
 
     @SuppressLint("UseRequireInsteadOfGet")
@@ -836,6 +856,7 @@ class SongPlayingFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         Staticated.cancelHandler()
+        setNavBarColor(R.color.colorPrimary)
         try {
             if (audioVisualization != null)
                 audioVisualization?.release()
@@ -913,11 +934,13 @@ class SongPlayingFragment : Fragment() {
                 AppUtil.getAppPreferences(context).edit().putInt(Constants.VISUALIZER, View.GONE).apply()
                 albumArt?.visibility = View.VISIBLE
                 controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.colorPrimary))
+                setNavBarColor(R.color.colorPrimary)
             } else {
                 AppUtil.getAppPreferences(context).edit().putInt(Constants.VISUALIZER, View.VISIBLE).apply()
                 glView?.visibility = View.VISIBLE
                 albumArt?.visibility = View.GONE
                 controlsView?.setBackgroundColor(requireContext().resources.getColor(R.color.four))
+                setNavBarColor(R.color.four)
             }
         }
 
