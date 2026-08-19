@@ -278,6 +278,13 @@ class MainActivity : AppCompatActivity() {
         fragments!![2] = FavoriteFragment()
         fragments!![3] = SearchFragment()
 
+        // open MainScreenFragment
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.details_fragment, fragments!!.get(0), MainScreenFragment.TAG)
+                .commit()
+        }
+
         viewModel.init()
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {

@@ -34,7 +34,6 @@ class FavoriteFragment : Fragment() {
         var mInstance: FavoriteFragment ?= null
     }
     var favouriteAdapter: FavoriteAdapter? = null
-    var main: MainActivity? = null
     var myActivity: Activity? = null
 
     /*This variable will be used for database instance*/
@@ -63,7 +62,6 @@ class FavoriteFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
 
         setHasOptionsMenu(true)
-        main = MainActivity()
         activity?.title = "Favorites"
         favoriteContent = EchoDatabase(myActivity)
         binding = FragmentFavoriteBinding.inflate(layoutInflater)

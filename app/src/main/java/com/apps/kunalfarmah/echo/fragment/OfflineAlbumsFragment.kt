@@ -27,7 +27,6 @@ class OfflineAlbumsFragment : Fragment() {
     }
     val viewModel: SongsViewModel by viewModels()
     var binding: FragmentAlbumsBinding? = null
-    var main: MainActivity? = null
     var list: List<SongAlbum>? = null
     var mAdapter: OfflineAlbumsAdapter? = null
 
@@ -41,7 +40,6 @@ class OfflineAlbumsFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentAlbumsBinding.inflate(layoutInflater)
         setHasOptionsMenu(true)
-        main = MainActivity()
         try {
             activity?.title = "Albums"
             activity?.actionBar?.title = "Albums"

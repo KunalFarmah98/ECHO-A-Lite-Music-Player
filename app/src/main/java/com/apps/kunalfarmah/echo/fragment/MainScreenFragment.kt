@@ -35,7 +35,6 @@ class MainScreenFragment : Fragment() {
     }
 
     private val viewModel: SongsViewModel by viewModels()
-    var main: MainActivity? = null
     var songsList: List<Songs>? = null
 
     var myActivity: Activity? = null
@@ -57,7 +56,6 @@ class MainScreenFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         binding = FragmentMainScreenBinding.inflate(layoutInflater)
-        main = MainActivity()
         activity?.title = "All Songs"
         
         MainActivity.Statified.MainorFavOn = true
