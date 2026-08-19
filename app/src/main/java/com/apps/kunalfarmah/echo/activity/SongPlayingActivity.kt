@@ -1,10 +1,10 @@
 package com.apps.kunalfarmah.echo.activity
 
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -24,25 +24,29 @@ class SongPlayingActivity : AppCompatActivity() {
         instance = this@SongPlayingActivity
         binding = ActivitySongPlayingBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeButtonEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.baseline_queue_music_white_24dp)
-        supportActionBar?.setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.colorPrimary)))
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM){
-            val topPadding = (55 * resources.displayMetrics.density).toInt()
-            binding.container.setPadding(0, topPadding, 0, 0)
-        }
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
-            val systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
-            view.setPadding(
-                systemBars.left,
-                systemBars.top,
-                systemBars.right,
-                systemBars.bottom
-            )
-            WindowInsetsCompat.CONSUMED
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            enableEdgeToEdge()
+            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
+                val systemBars =
+                    windowInsets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+                binding.appbarlayout.setPadding(0, systemBars.top, 0, 0)
+                view.setPadding(
+                    systemBars.left,
+                    0,
+                    systemBars.right,
+                    systemBars.bottom
+                )
+                windowInsets
+            }
+            // preserving statusbar theme
+            val windowInsetsController =
+                ViewCompat.getWindowInsetsController(window.decorView)
+            windowInsetsController?.isAppearanceLightStatusBars = false
+            windowInsetsController?.isAppearanceLightNavigationBars = false
         }
 
         val args = intent.extras
