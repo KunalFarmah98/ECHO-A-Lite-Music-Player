@@ -300,13 +300,11 @@ class SongPlayingFragment : Fragment() {
         fun setNavBarColor(colorResId: Int) {
             if (myActivity != null) {
                 val color = ContextCompat.getColor(myActivity!!, colorResId)
+                myActivity?.window?.navigationBarColor = color
                 // For Android 15+ (API 35+), the navigation bar is forced transparent with edge-to-edge.
                 // To show a color, we set the activity's content background so it shows in the padded area.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
                     myActivity?.findViewById<View>(R.id.root_view)?.setBackgroundColor(color)
-                }
-                else {
-                    myActivity?.window?.navigationBarColor = color
                 }
             }
         }
