@@ -49,12 +49,10 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
 
             /*Loading the Main Screen Fragment as the first(remember that the index starts at 0) item is All songs and the fragment corresponding to it is the Main Screen fragment*/
             if (position == 0) {
-                (mContext as MainActivity).moveToHome()
-            } else if (position == 1) {
                 mContext?.startActivity(Intent(mContext,SettingsActivity::class.java).apply { `package` = mContext?.packageName })
-            }  else if (position == 2) {
+            }  else if (position == 1) {
                 mContext?.startActivity(Intent(mContext,HelpActivity::class.java).apply { `package` = mContext?.packageName })
-            } else if (position == 3) {
+            } else if (position == 2) {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
                 sendIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -67,7 +65,7 @@ class NavigationDrawerAdapter(_contentList: ArrayList<String>, _getImages: Array
                 catch (e: ActivityNotFoundException){
                     Toast.makeText(mContext, mContext?.resources?.getString(R.string.no_app_share), Toast.LENGTH_SHORT).show()
                 }
-            } else if (position == 4) {
+            } else if (position == 3) {
                 val uri = Uri.parse("market://details?id=" + mContext?.packageName)
                 val goToMarket = Intent(Intent.ACTION_VIEW, uri)
                 // To count with Play market backstack, After pressing back button,

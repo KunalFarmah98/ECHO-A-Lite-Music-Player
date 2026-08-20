@@ -1,6 +1,5 @@
 package com.apps.kunalfarmah.echo.activity
 
-import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -21,7 +20,6 @@ import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
@@ -122,7 +120,7 @@ class MainActivity : AppCompatActivity() {
     var navigationDrawerIconsList: ArrayList<String> = arrayListOf()
 
     /*Images which will be used inside navigation drawer*/
-    var images_for_navdrawer = arrayOf(R.drawable.navigation_allsongs, R.drawable.navigation_settings, R.drawable.ic_baseline_help_24, R.drawable.baseline_share_white_36dp, R.drawable.baseline_star_rate_white_36dp)
+    var images_for_navdrawer = arrayOf(R.drawable.navigation_settings, R.drawable.ic_baseline_help_24, R.drawable.baseline_share_white_36dp, R.drawable.baseline_star_rate_white_36dp)
 
     object Statified {
         var drawerLayout: DrawerLayout? = null
@@ -340,7 +338,6 @@ class MainActivity : AppCompatActivity() {
         MainActivity.Statified.drawerLayout = findViewById(R.id.drawer_layout)
 
         /*Adding names of the titles using the add() function of ArrayList*/
-        navigationDrawerIconsList.add("All Songs")
         navigationDrawerIconsList.add("Settings")
         navigationDrawerIconsList.add("Help")
         navigationDrawerIconsList.add("Share")
@@ -354,9 +351,9 @@ class MainActivity : AppCompatActivity() {
 
         /*Now we create a variable of Navigation Drawer adapter and initialise it with the params required. As you remember that while creating a class for the navigation drawer adapter,
             * we gave it some params which are required for initialising the class. These params are the list, images and the context for the adapter file respectively*/
-        val _navigationAdapter = NavigationDrawerAdapter(navigationDrawerIconsList, images_for_navdrawer, this)
+        val navigationAdapter = NavigationDrawerAdapter(navigationDrawerIconsList, images_for_navdrawer, this)
 
-        _navigationAdapter.notifyDataSetChanged()
+        navigationAdapter.notifyDataSetChanged()
 
         val drawerRecycler = binding.navRecyclerView
 
@@ -365,7 +362,7 @@ class MainActivity : AppCompatActivity() {
         drawerRecycler.itemAnimator = DefaultItemAnimator()
 
 /*Now we set the adapter to our recycler view to the adapter we created*/
-        drawerRecycler.adapter = _navigationAdapter
+        drawerRecycler.adapter = navigationAdapter
 
         drawerRecycler.setHasFixedSize(true)
 
@@ -450,9 +447,5 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-    }
-
-    fun moveToHome() {
-        bottomNav!!.selectedItemId = R.id.navigation_main_screen
     }
 }
